@@ -1,0 +1,16 @@
+{
+    "name": "okky/librarian-plugin",
+    "description": "Handle managing book library for headless application",
+    "type": "project",
+    "authors": [
+        {
+            "name": "okkyAdiansyah",
+            "email": "okkyadiansyah.0610@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {"Librarian\\" : "./src/include"}
+    }
+}
