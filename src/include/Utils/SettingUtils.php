@@ -39,4 +39,31 @@ class SettingUtils{
             $position 
         );
     }
+    
+    /**
+     * Admin template view utils
+     * 
+     * @param string $filename File name for template view
+     * 
+     * @return void
+     */
+    public function librarian_require_admin_view_template_utils($filename){
+        if( file_exists( plugin_dir_path( dirname( __DIR__, 2 )) ) . 'src/admin-template/' . $filename ){
+            require plugin_dir_path( dirname( __DIR__, 2 ) ) . 'src/admin-template/' . $filename;
+        } else {
+            echo "<div class='wrap'>Test</div>";
+        }
+    }
+
+    /**
+     * Add option using Option API
+     * 
+     * @param string $option_id Option handler identifier
+     * @param array $options Array of option. Use array to add new option to prevent individual db transaction for each option
+     *                       Default: array()
+     * @return void
+     */
+    public function librarian_register_options_utils( $option_id, $options = array() ){
+        add_option( $option_id, $options );
+    }
 }

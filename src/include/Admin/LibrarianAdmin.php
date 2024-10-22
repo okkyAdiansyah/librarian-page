@@ -10,23 +10,31 @@ if( ! defined( 'ABSPATH' ) ){
     exit;
 }
 
+use Librarian\Utils\SettingUtils;
+use Librarian\SettingsAPI\GeneralSetting;
 use Librarian\SettingsAPI\BookChapterSetting;
 use Librarian\SettingsAPI\BookCollectionSetting;
 use Librarian\SettingsAPI\ChapterPageSetting;
-
 
 class LibrarianAdmin {
     /**
      * @var Librarian\Settings\SettingsAPI[] $settings_api Array of Settings API instance
      */
     public $settings_api;
+    
+    /**
+     * @var Librarian\Utils\SettingsUtils $settings_utils Instance for Setting Utils
+     */
+    public $settings_utils;
 
     public function __construct(){
         $this->settings_api = array(
+            new GeneralSetting(),
             new BookChapterSetting(),
             new BookCollectionSetting(),
             new ChapterPageSetting()
         );
+        $this->settings_utils = new SettingUtils();
 
         add_action( 'admin_menu', array( $this, 'librarian_add_top_level_admin_page' ), 10 );
         add_action( 'admin_menu', array( $this, 'librarian_add_general_sub_page' ), 10 );
@@ -44,8 +52,8 @@ class LibrarianAdmin {
             'Librarian', 
             'manage_options', 
             'librarian', 
-            array( $this, 'test' ), 
-            plugin_dir_url( dirname( __DIR__, 2 ) ) . '/asset/bookshelf.png', 
+            array( $this, 'librarian_main_admin_view' ),
+            plugin_dir_url( dirname( __DIR__, 2 ) ) . 'asset/bookshelf.png', 
             30
         );
     }
@@ -62,7 +70,7 @@ class LibrarianAdmin {
             'General', 
             'manage_options', 
             'librarian_general', 
-            array( $this, 'test' ) 
+            array( $this, 'librarian_general_settings_view' ) 
         );
     }
 
@@ -109,6 +117,28 @@ class LibrarianAdmin {
 
             add_action( 'load-' . $hookname, array( $this, 'test' ) );
         }
+    }
+
+    /**
+     * Callback for main admin view
+     * 
+     * @see librarian_require_admin_view_template_utils()
+     * 
+     * @return void
+     */
+    public function librarian_main_admin_view(){
+        $this->settings_utils->librarian_require_admin_view_template_utils( 'main-view.php' );
+    }
+
+    /**
+     * Callback for general settings view
+     * 
+     * @see librarian_require_admin_view_template_utils()
+     * 
+     * @return void
+     */
+    public function librarian_general_settings_view(){
+        $this->settings_utils->librarian_require_admin_view_template_utils( 'general-settings-view.php' );
     }
 
     public function test(){

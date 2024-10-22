@@ -35,6 +35,10 @@ class BookChapterSetting {
         $this->setting_utils->librarian_add_custom_post_editor_utils( 'book_chapter', 'Add New Chapter', 'Add New Chapter', 'manage_options', 'custom_add_new_chaper', array( $this, 'test' ) );
     }
 
+    /**
+     *
+     */
+
     public function test(){
         echo "
         <div>
