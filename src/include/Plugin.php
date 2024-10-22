@@ -1,11 +1,15 @@
 <?php
 /**
  * Initiate plugin activation
+ * 
+ * @package Librarian
  */
 namespace Librarian;
 if( ! defined( 'ABSPATH' ) ){
     exit;
 }
+
+use Librarian\Admin\LibrarianAdmin;
 
 class Plugin {
     /**
@@ -50,7 +54,9 @@ class Plugin {
         /**
          * @var array $services_to_register Array of service that need to register
          */
-        $services_to_register = array();
+        $services_to_register = array(
+            LibrarianAdmin::class
+        );
 
         foreach( $services_to_register as $service_key => $service ){
             $this->services[] = $this->librarian_instantiated($service);
