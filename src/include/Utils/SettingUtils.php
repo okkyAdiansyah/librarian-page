@@ -1,6 +1,6 @@
 <?php
 /**
- * Utils for Admin, Settings API, and Options
+ * Static class utils for Admin, Settings API, and Options.
  * 
  * @package Librarian
  */
@@ -23,7 +23,7 @@ class SettingUtils{
      * @param int $position Sub-menu postition
      *            Default: 20
      */
-    public function librarian_add_custom_post_editor_utils( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $callback, $position = 20 ){
+    public static function librarian_add_custom_post_editor_utils( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $callback, $position = 20 ){
         remove_submenu_page( 
             'edit.php?post_type=' . $parent_slug, 
             'post-new.php?post_type=' . $parent_slug
@@ -47,7 +47,7 @@ class SettingUtils{
      * 
      * @return void
      */
-    public function librarian_require_admin_view_template_utils($filename){
+    public static function librarian_admin_view_template_utils($filename){
         if( file_exists( plugin_dir_path( dirname( __DIR__, 2 )) ) . 'src/admin-template/' . $filename ){
             require plugin_dir_path( dirname( __DIR__, 2 ) ) . 'src/admin-template/' . $filename;
         } else {
@@ -56,14 +56,144 @@ class SettingUtils{
     }
 
     /**
-     * Add option using Option API
+     * Setting section and field registration utils
      * 
-     * @param string $option_id Option handler identifier
-     * @param array $options Array of option. Use array to add new option to prevent individual db transaction for each option
-     *                       Default: array()
+     * @param string $section_id Section identifier
+     * @param string $section_title Section title
+     * @param callback $section_callback Section view renderer
+     * @param string $opt_page_id Setting page identifier
+     * @param array $setting_fields Array of setting field that want to be registered
+     * 
      * @return void
      */
-    public function librarian_register_options_utils( $option_id, $options = array() ){
-        add_option( $option_id, $options );
+    public static function librarian_register_setting_section_utils( $section_id, $section_title, $section_callback, $opt_page_id, $setting_fields ){
+        // Register setting section
+        add_settings_section( 
+            $section_id,
+            __( $section_title, 'librarian' ),
+            $section_callback, 
+            $opt_page_id
+        );
+
+        // Loop over field that want to be registered
+
+        foreach( $setting_fields as $field ){
+            add_settings_field( 
+                $field['id'], 
+                __( $field['title'], 'librarian' ), 
+                $field['callback'], 
+                $opt_page_id, 
+                $section_id, 
+                $field['args']
+            );
+        }
+    }
+
+    /**
+     * Setting field checkbox renderer utils
+     * 
+     * @param array $args Option key, ARIA describedy
+     * 
+     * @return void
+     */
+    public static function librarian_checkbox_field_renderer_utils( $args ){
+        /**
+         * @see librarian_get_option_value filter
+         */
+        $option = apply_filters( 
+            'librarian_get_option_value', 
+            'librarian_' . $args['option'], 
+            'librarian_' . $args['label_for'],
+            false
+        );
+
+        $checked = $option ? 'checked' : '';
+
+        printf(
+            "<input id='%s' type='%s' name='%s' %s value='%s'>",
+            esc_attr( $args['label_for'] ),
+            esc_attr( 'checkbox' ),
+            esc_attr( $args['label_for'] ),
+            $checked,
+            esc_attr( $option )
+        );
+
+        if( isset( $args['describedby'] ) ){
+            printf(
+                "<p id='%s'>%s</p>",
+                esc_attr( $args['describedby'] ),
+                esc_html( $args['desc'], 'librarian' )
+            );
+        }
+    }
+
+    /**
+     * Setting number input field renderer utils
+     * 
+     * @param array $args Option key, ARIA describedy
+     * 
+     * @return void
+     */
+    public static function librarian_number_input_field_renderer_utils( $args ){
+        /**
+         * @see librarian_get_option_value filter
+         */
+        $option = apply_filters( 
+            'librarian_get_option_value', 
+            'librarian_' . $args['option'], 
+            'librarian_' . $args['label_for'],
+            false
+        );
+
+        printf(
+            "<input id='%s' type='%s' name='%s' value='%s' class='regular-text' >",
+            esc_attr( $args['label_for'] ),
+            esc_attr( 'number' ),
+            esc_attr( $args['label_for'] ),
+            esc_attr( $option )
+        );
+
+        if( isset( $args['describedby'] ) ){
+            printf(
+                "<p id='%s'>%s</p>",
+                esc_attr( $args['describedby'] ),
+                esc_html( $args['desc'], 'librarian' )
+            );
+        }
+    }
+
+    /**
+     * Setting text input field renderer utils
+     * 
+     * @param array $args Option key, ARIA describedy
+     * 
+     * @return void
+     */
+    public static function librarian_text_input_field_renderer_utils( $args ){
+        /**
+         * @see librarian_get_option_value filter
+         */
+        $option = apply_filters( 
+            'librarian_get_option_value', 
+            'librarian_' . $args['option'], 
+            'librarian_' . $args['label_for'],
+            false
+        );
+
+        printf(
+            "<input id='%s' class='regular-text' type='%s' name='%s' value='%s'>",
+            esc_attr( $args['label_for'] ),
+            esc_attr( 'text' ),
+            esc_attr( $args['label_for'] ),
+            esc_attr( $option )
+        );
+
+        if( isset( $args['describedby'] ) ){
+            printf(
+                "<p id='%s'>%s</p>",
+                esc_attr( $args['describedby'] ),
+                esc_html( $args['desc'], 'librarian' )
+            );
+        }
     }
 }

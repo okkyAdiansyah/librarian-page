@@ -28,17 +28,19 @@ class LibrarianAdmin {
     public $settings_utils;
 
     public function __construct(){
-        $this->settings_api = array(
-            new GeneralSetting(),
-            new BookChapterSetting(),
-            new BookCollectionSetting(),
-            new ChapterPageSetting()
-        );
         $this->settings_utils = new SettingUtils();
 
+        $this->settings_api = array(
+            new GeneralSetting()
+        );
+
+        foreach($this->settings_api as $setting){
+            $setting->init();
+        }
+        
         add_action( 'admin_menu', array( $this, 'librarian_add_top_level_admin_page' ), 10 );
         add_action( 'admin_menu', array( $this, 'librarian_add_general_sub_page' ), 10 );
-        add_action( 'admin_menu', array( $this, 'librarian_add_cpt_manager_sub_page' ), 10 );
+        // add_action( 'admin_menu', array( $this, 'librarian_add_cpt_manager_sub_page' ), 10 );
     }
 
     /**
