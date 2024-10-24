@@ -9,7 +9,7 @@ if( ! defined( 'ABSPATH' ) ){
     exit;
 }
 
-use Librarian\Admin\LibrarianAdmin;
+use Librarian\Admin\MainAdmin;
 
 class Plugin {
     /**
@@ -55,11 +55,15 @@ class Plugin {
          * @var array $services_to_register Array of service that need to register
          */
         $services_to_register = array(
-            LibrarianAdmin::class
+            MainAdmin::class
         );
 
         foreach( $services_to_register as $service_key => $service ){
             $this->services[] = $this->librarian_instantiated($service);
+        }
+
+        foreach( $this->services as $service ){
+            $service->librarian_init();
         }
     }
 

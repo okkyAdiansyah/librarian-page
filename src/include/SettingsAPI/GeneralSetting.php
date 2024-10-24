@@ -13,56 +13,13 @@ if( ! defined( 'ABSPATH' )){
 use Librarian\Utils\SettingUtils;
 
 class GeneralSetting {
-    /**
-     * @var Librarian\Utils\SettingUtils $setting_utils Setting utils instance
-     */
-    public $setting_utils;
 
     public function __construct() {
-        $this->setting_utils = new SettingUtils();
+
     }
 
-    /**
-     * Register all options
-     * 
-     * @return void
-     */
-    public function librarian_register_options(){
-        $function_called = get_transient( 'librarian_general_settings' );
-
-        // Make sure this function run once
-        if( false === $function_called ){
-            return;
-        }
-
-        $this->librarian_add_api_setting_options();
-        $this->librarian_add_content_default_setting_options();
-        $this->librarian_add_headless_setting_options();
-        $this->librarian_add_main_ui_setting_options();
-        $this->librarian_add_notif_and_log_setting_options();
-        $this->librarian_add_user_permission_setting_options();
-
-        set_transient( 'librarian_general_settings', true, 60 * 60 );
-    }
-
-    /**
-     * Add API setting options
-     * 
-     * @return void
-     */
-    private function librarian_add_api_setting_options(){
-        /**
-         * @var array $options Array of options
-         */
-        $options = array(
-            'librarian_api_enabled' => true,
-            'librarian_api_cache_duration' => 3600,
-            'librarian_api_throttle_limits' => 50,
-            'librarian_api_enable_cors' => false,
-            'librarian_api_key' => "LIBRARIANCOREAPI"
-        ); 
-
-        $this->setting_utils->librarian_register_options_utils('librarian_api_options', $options);
+    public function init(){
+        $this->librarian_settings_init();
     }
 
     /**
@@ -159,6 +116,139 @@ class GeneralSetting {
             'librarian_user_permission_conntet_moderation' => 'admin'
         ); 
 
-        $this->setting_utils->librarian_register_options_utils('librarian_user_permissi_options', $options);
+        $this->setting_utils->librarian_register_options_utils('librarian_user_permission_options', $options);
     }
+
+    /**
+     * Registering all setting and option for admin view
+     * 
+     * @return void
+     */
+    private function librarian_settings_init(){
+        add_action( 'admin_init', array( $this, 'librarian_add_general_setting_section' ), 10 );
+        register_setting( 'librarian_general', 'librarian_general_setting' );
+        $this->librarian_add_api_setting_options();
+    }
+
+    /**
+     * Add API setting options
+     * 
+     * @return void
+     */
+    private function librarian_add_api_setting_options(){
+        /**
+         * @var array $options Array of options
+         */
+        $options = array(
+            'librarian_api_enabled' => true,
+            'librarian_api_cache_duration' => 3600,
+            'librarian_api_throttle_limits' => 50,
+            'librarian_api_enable_cors' => false,
+            'librarian_api_key' => "LIBRARIANCOREAPI"
+        );
+
+        add_option( 'librarian_api_options', $options );
+    }
+
+    /**
+     * API Settings section
+     * 
+     * @return void
+     */
+    public function librarian_add_general_setting_section(){
+        /**
+         * @var array $setting_fields Array of fields that want to be registered
+         */
+        $setting_fields = array(
+            array(
+                'id' => 'api_enable',
+                'title' => 'Enable API',
+                'callback' => array( $this, 'librarian_api_enable_field_renderer' ),
+                'args' => array(
+                    'label_for' => 'api_enable'
+                )
+            )
+            // array(
+            //     'id' => 'api_caching_duration',
+            //     'title' => 'API Caching Duration ( in seconds ) ',
+            //     'callback' => array( $this, 'librarian_api_caching_duration_field_renderer' ),
+            //     'args' => array(
+            //         'label_for' => 'api_caching_duration'
+            //     )
+            // ),
+            // array(
+            //     'id' => 'api_throttle_limits',
+            //     'title' => 'Limit API Call',
+            //     'callback' => array( $this, 'librarian_api_throttle_limits_field_renderer' ),
+            //     'args' => array(
+            //         'label_for' => 'api_throttle_limits'
+            //     )
+            // ),
+            // array(
+            //     'id' => 'api_enable_cors',
+            //     'title' => 'Enable CORS',
+            //     'callback' => array( $this, 'librarian_api_enable_cors_field_renderer' ),
+            //     'args' => array(
+            //         'label_for' => 'api_enable_cors'
+            //     )
+            // ),
+            // array(
+            //     'id' => 'api_key',
+            //     'title' => 'API Key',
+            //     'callback' => array( $this, 'librarian_api_key_field_renderer' ),
+            //     'args' => array(
+            //         'label_for' => 'api_key'
+            //     )
+            // )
+        );
+
+        /**
+         * @see Librarian\Utils\SettingUtils librarian_register_setting_section_utils()
+         */
+
+        SettingUtils::librarian_register_setting_section_utils(
+            'api_setting',
+            'API Setting',
+            array( $this, 'librarian_api_setting_section_renderer' ),
+            'librarian_general',
+            $setting_fields
+        );
+    }
+
+    /**
+     * API setting section renderer
+     * 
+     * @return void
+     */
+    public function librarian_api_setting_section_renderer(){
+        ?>
+        <p class='librarian-section__desc'><?php esc_html_e( 'General API setting', 'librarian' ); ?></p>
+        <?php
+    }
+
+    /**
+     * API Enable field renderer
+     * 
+     * @return void
+     */
+    public function librarian_api_enable_field_renderer(){
+        /**
+         * @see librarian_get_option_value filter
+         */
+        $option = apply_filters( 'librarian_get_option_value', 'librarian_api_options', 'librarian_api_enabled', false );
+        
+        if( $option === false ) : ?>
+            <p class="librarian-option--error">
+                <?php esc_html_e( 'Option not registered', 'librarian' ); ?>
+            </p>
+        <?php else : ?>
+            <div class="librarian-input-container">
+                <label for="api_enable" class="librarian-input__label"><?php esc_html_e( 'Enable API Connection', 'librarian' ); ?></label>
+                <input type="checkbox" name="api_enable" id="api_enable" checked="<?php esc_attr( $option ); ?>">
+            </div>
+        <?php endif; ?>
+        <?php
+    }
+
+
 }
