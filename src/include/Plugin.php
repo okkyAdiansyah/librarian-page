@@ -112,7 +112,7 @@ class Plugin {
             'labels'             => $chapter_labels,
             'public'             => true,
             'hierarchical'       => true,
-            'supports'           => ['title', 'editor', 'thumbnail'],
+            'supports'           => ['title', 'thumbnail'],
             'menu_icon'          => 'dashicons-open-folder',
             'show_in_rest'       => true
         );
@@ -141,7 +141,7 @@ class Plugin {
             'labels'             => $page_labels,
             'public'             => true,
             'hierarchical'       => true,
-            'supports'           => ['title', 'editor', 'thumbnail'],
+            'supports'           => ['thumbnail'],
             'menu_icon'          => 'dashicons-text-page',
             'show_in_rest'       => true
         );
@@ -170,7 +170,7 @@ class Plugin {
             'labels'             => $collection_labels,
             'public'             => true,
             'hierarchical'       => true,
-            'supports'           => ['title', 'editor', 'thumbnail'],
+            'supports'           => ['title', 'thumbnail'],
             'menu_icon'          => 'dashicons-book',
             'show_in_rest'       => true
         );

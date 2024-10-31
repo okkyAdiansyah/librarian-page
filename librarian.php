@@ -18,9 +18,9 @@ if( file_exists( dirname( __FILE__ ) . '/src/hooks/plugin-hook.php') ){
     require_once dirname( __FILE__ ) . '/src/hooks/plugin-hook.php';
 }
 
-use Librarian\Plugin;
+use Librarian\PluginInit;
 
-$plugin = new Plugin();
+$plugin = new PluginInit();
 $plugin->librarian_init();
 
 register_activation_hook( __FILE__, array( $plugin, 'librarian_plugin_activate' ));
