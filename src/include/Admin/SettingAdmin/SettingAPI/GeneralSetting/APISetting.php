@@ -33,7 +33,7 @@ class APISetting {
             'librarian_api_call_throttle_limit' => 100,
             'librarian_api_enable_cors' => false,
             'librarian_api_key' => 'LIBRARIANCOREAPIKEY',
-            'librarian_api_rest_route' => 'wp-json/librarian/v1/',
+            'librarian_api_rest_route' => '/librarian/v1/',
             'librarian_api_allowed_origin' => '',
             'librarian_api_webhook_sync_url' => ''
         );
