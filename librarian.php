@@ -19,9 +19,14 @@ if( file_exists( dirname( __FILE__ ) . '/src/hooks/plugin-hook.php') ){
 }
 
 use Librarian\PluginInit;
+use Librarian\Options;
 
 $plugin = new PluginInit();
 $plugin->librarian_init();
 
 register_activation_hook( __FILE__, array( $plugin, 'librarian_plugin_activate' ));
 register_deactivation_hook( __FILE__, array( $plugin, 'librarian_plugin_deactivate' ) );
+
+function LIBRARIAN_OPTION(){
+    return Options::librarian_get_instance();
+}

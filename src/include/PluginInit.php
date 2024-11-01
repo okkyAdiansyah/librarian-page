@@ -13,6 +13,9 @@ if( ! defined( 'ABSPATH' ) ){
 use Librarian\CustomPostType\CollectionPostType;
 use Librarian\CustomPostType\ChapterPostType;
 use Librarian\CustomPostType\BookContentPostType;
+use Librarian\Services\RestApi\Route;
+use Librarian\Services\RestApi\Setting\ApiSetting;
+
 
 class PluginInit {
     /**
@@ -25,7 +28,12 @@ class PluginInit {
      */
     public function librarian_init(){
         $this->librarian_register_service();
+
         add_action( 'init', array( $this, 'librarian_register_default_custom_post_type' ), 10 );
+
+        foreach( $this->services as $service ){
+            $service->librarian_init();
+        }
     }
 
     /**
@@ -35,10 +43,10 @@ class PluginInit {
      */
     public function librarian_register_service(){
         $services_to_register = array(
-
+            Route::class
         );
 
-        foreach ($services_to_register as $service) {
+        foreach ( $services_to_register as $service ) {
             $this->services[] = $this->librarian_instantiated($service);
         }
     }
@@ -50,7 +58,7 @@ class PluginInit {
      * 
      * @return Service
      */
-    public function librarian_instantiated( $serivce ){
+    public function librarian_instantiated( $service ){
         if( $service === null ){
             return;
         }
