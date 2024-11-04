@@ -27,7 +27,7 @@ class CollectionPostType{
             'labels'             => $this->labels,
             'public'             => true,
             'hierarchical'       => true,
-            'supports'           => ['title', 'thumbnail', 'author', 'excerpt'],
+            'supports'           => ['title', 'thumbnail', 'excerpt'],
             'menu_icon'          => 'dashicons-book',
             'show_in_rest'       => true
         );

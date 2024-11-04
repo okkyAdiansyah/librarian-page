@@ -2,6 +2,8 @@
 /**
  * Plugin Init
  * 
+ * @uses Librarian\Admin\MainAdmin\MainAdmin Uses for register plugin main admin page
+ * 
  * @package Librarian
  */
 namespace Librarian;
@@ -10,6 +12,10 @@ if( ! defined( 'ABSPATH' ) ){
     exit;
 }
 
+
+use Librarian\View\Admin;
+use Librarian\Services\AutoUpdate\PostAutoUpdate;
+use Librarian\Admin\MainAdmin\MainAdmin;
 use Librarian\CustomPostType\CollectionPostType;
 use Librarian\CustomPostType\ChapterPostType;
 use Librarian\CustomPostType\BookContentPostType;
@@ -22,6 +28,12 @@ class PluginInit {
      * @var Librarian\Services\Service[] $services Collection of registered service
      */
     public $services = [];
+    
+    public $options;
+
+    public function __construct() {
+        $this->options = LIBRARIAN_OPTION();
+    }
 
     /**
      * Init plugin functionalities
@@ -43,7 +55,9 @@ class PluginInit {
      */
     public function librarian_register_service(){
         $services_to_register = array(
-            Route::class
+            Route::class,
+            Admin::class,
+            PostAutoUpdate::class
         );
 
         foreach ( $services_to_register as $service ) {
@@ -77,6 +91,7 @@ class PluginInit {
      * Plugin deactivate
      */
     public function librarian_plugin_deactivate(){
+        $this->options->librarian_reset_option();
         flush_rewrite_rules(  );
     }
 
