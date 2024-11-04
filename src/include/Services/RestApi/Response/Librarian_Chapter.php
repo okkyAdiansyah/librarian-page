@@ -4,7 +4,7 @@
  * 
  * @package Librarian
  */
-namespace Librarian\Services\RestApi;
+namespace Librarian\Services\RestApi\Response;
 
 if( ! defined( 'ABSPATH' ) ){
     exit;

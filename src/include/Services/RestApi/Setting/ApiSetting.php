@@ -11,19 +11,24 @@ if( ! defined( 'ABSPATH' ) ){
 }
 
 class ApiSetting{
+
+    public $options;
+
     public function __construct() {
-        add_action( 'admin_init', array( $this, 'librarian_init' ), 10 );
+        $this->options = LIBRARIAN_OPTION();
     }
 
     /**
      * Register API option
+     * 
+     * @return void
      */
     public function librarian_init(){
         $options = array(
             "api_key"             => "LIBRARIANAPICOREKEY",
             "api_route_namespace" => "librarian/v1/"
         );
-
-        add_option( 'librarian_api', $options );
+        
+        $this->options->librarian_add_option('api', $options);
     }
 }

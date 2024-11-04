@@ -27,7 +27,7 @@ class ChapterPostType{
             'labels'             => $this->labels,
             'public'             => true,
             'hierarchical'       => true,
-            'supports'           => ['thumbnail'],
+            'supports'           => ['thumbnail', 'title'],
             'menu_icon'          => 'dashicons-open-folder',
             'show_in_rest'       => true
         );

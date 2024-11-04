@@ -11,6 +11,11 @@ if( ! defined( 'ABSPATH' ) ){
 }
 
 class Options{
+    /**
+     * @var array $options List of option added
+     */
+    public static $options = array();
+
     public static $instance = null;
 
     public function __construct() {
@@ -25,6 +30,10 @@ class Options{
         return self::$instance;
     }
 
+    public function debug($option_name){
+        return get_option(self::$options[$option_name]);
+    }
+
     /**
      * Retrieve single option
      * 
@@ -36,8 +45,8 @@ class Options{
     public function librarian_get_option( $option_name, $option_key ){
         $option = apply_filters( 
             'librarian_get_option_value', 
-            'librarian_' . $option_name, 
-            $option_name . $option_key,
+            self::$options[$option_name], 
+            $option_name . '_' . $option_key,
             false
         );
 
@@ -54,5 +63,17 @@ class Options{
      */
     public function librarian_add_option( $option_name, $args ){
         add_option('librarian_' . $option_name, $args);
+        self::$options[$option_name] = 'librarian_' . $option_name;
+    }
+
+    /**
+     * Delete option
+     * 
+     * @return void
+     */
+    public function librarian_reset_option(){
+        foreach( self::$options as $option ){
+            delete_option( $option );
+        }
     }
 }

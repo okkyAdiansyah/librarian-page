@@ -38,7 +38,7 @@ class BookContentPostType{
      */
     public function librarian_register_post_type(){
         $cpt_args = array(
-            "slug"           => 'book-content',
+            "slug"           => 'book_content',
             "post_type_args" => $this->args
         );
 
