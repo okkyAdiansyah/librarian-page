@@ -21,6 +21,7 @@ use Librarian\CustomPostType\ChapterPostType;
 use Librarian\CustomPostType\BookContentPostType;
 use Librarian\Services\RestApi\Route;
 use Librarian\Services\RestApi\Setting\ApiSetting;
+use Librarian\Services\StarRating\StarRating;
 
 
 class PluginInit {
@@ -57,7 +58,8 @@ class PluginInit {
         $services_to_register = array(
             Route::class,
             Admin::class,
-            PostAutoUpdate::class
+            PostAutoUpdate::class,
+            StarRating::class
         );
 
         foreach ( $services_to_register as $service ) {
